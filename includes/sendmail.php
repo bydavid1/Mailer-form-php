@@ -1,7 +1,7 @@
 <?php
 
-require 'includes/phpmailer/PHPMailer.php';
-require 'includes/phpmailer/SMTP.php';
+include 'mail/PHPMailer.php';
+include 'mail/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -27,7 +27,23 @@ $solicitud = $_POST['solicitud'];
 $agencia = $_POST['agencia'];
 
 
-echo "
+$mail = new PHPMailer;
+
+$mail->Host = 'smtp.gmail.com';  //SMTP Server
+$mail->SMTPAuth = true;                               
+$mail->Username = 'desarrolloweb@grupofenix.com.sv';      //email     
+$mail->Password = '@18gfSVcmkt2';                 //contraseña
+$mail->SMTPSecure = 'ssl';                 
+$mail->Port = 587;                                   
+
+$mail->setFrom('noreply@lasihua.com', 'La Sihua');
+$mail->addAddress('bayronmartinez9911@gmail.com');   //Direcciones
+$mail->addAddress($email);         
+$mail->addReplyTo('noreply@lasihua.com', 'Information');
+$mail->isHTML(true); 
+
+$mail->Subject = 'Solicitud afectado por COVID-19'; //Asunto
+$mail->Body    = "
 <html>
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
@@ -84,6 +100,13 @@ cuya veracidad podrá ser investigada libremente, además autorizo a SIHUACOOP D
 custodiada y compartida con las autoridades y funcionarios competentes para todos los efectos legales que puedan corresponder</p>
 <p>*Acepto que toda la información es fidedigna.</p>";
 
+if(!$mail->send()) {
+    $valid['success']  = false;
+    $valid['messages'] = "Ocurrió un error al enviar, intentelo mas tarde";
+} else {
+    $valid['success']  = true;
+    $valid['messages'] = "Enviado";
+}
 
 echo json_encode($valid);
 ?>
