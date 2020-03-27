@@ -285,7 +285,7 @@
 
 											<div class="separator-3"></div>
 											<!--inicia conten Index   \ROWS/-->
-											<form action="includes/sendmail.php" id="covid-form">
+											<form action="includes/sendmail.php" id="covid-form" method="POST">
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
@@ -646,7 +646,7 @@
 			$("#send").button('loading');
 			$('#result').html('');
 			$.ajax({
-				type: 'POST',
+				type: $(this).attr('method'),
 				url: $(this).attr('action'),
 				data: $(this).serialize(),
 				dataType: 'json',
@@ -655,9 +655,13 @@
                         $('#result').html('<div class="alert alert-success">' +
                             '<button type="button" class="close" data-dismiss="alert">&times;</button>' +  response.messages +
                             '</div>');
-							setTimeout(function() {
-                              $("#result").fadeOut(1500);
-                            },3000);
+
+							$(".alert-success").delay(500).show(10, function() {
+							$(this).delay(3000).hide(10, function() {
+								$(this).remove();
+							});
+						});
+
 							$("#send").button('reset');
 							$("#send").prop('disabled', false);
 							$('#covid-form')[0].reset();
